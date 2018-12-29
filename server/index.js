@@ -3,11 +3,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const isProduction = process.env.NODE_ENV === 'production'
 const nodemailer = require('nodemailer')
-const cors = require('cors');
+const execSync = require('child_process').execSync
+const cors = require('cors')
 const corsOptions = {
   origin: function (origin, callback) {
     // Only allow requests from the the front-office
-    if (origin === process.env.FO_ROOT_URL) {
+    if (origin === process.env.FO_ROOT_URL || !isProduction) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
@@ -26,7 +27,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 
 // POST mail endpoint
 app.post('/email', function(req, res) {
@@ -60,7 +61,19 @@ app.post('/email', function(req, res) {
       }
     })
   } catch (error) {
-    res.status(500).json('The email couldn\'t be sent')
+    res.status(500).json('The email couldn\'t be sent.')
+  }
+})
+
+// POST vote endpoint
+app.post('/vote', function(req, res) {
+  try {
+    const scriptPath = `${process.env.PWD}/server/test.php`
+    const phpPath = execSync('which php').toString().replace('\n', '')
+    execSync(`${phpPath} ${scriptPath}`)
+    res.status(200).json('The vote was posted.')
+  } catch (error) {
+    res.status(500).json('The vote couldn\'t be posted.')
   }
 })
 
