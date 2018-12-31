@@ -3,7 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const isProduction = process.env.NODE_ENV === 'production'
 const nodemailer = require('nodemailer')
-const execSync = require('child_process').execSync
+const phpCmd = require('./utils/phpCmd')
 const cors = require('cors')
 const corsOptions = {
   origin: function (origin, callback) {
@@ -71,13 +71,10 @@ app.post('/email', function(req, res) {
  */
 app.post('/vote/:id', function(req, res) {
   try {
-    const scriptPath  = `${process.env.PWD}/server/increment_vote.php`
-    const phpPath     = execSync('which php').toString().replace('\n', '')
-    const jsonData    = `'${JSON.stringify({ id: req.params.id })}'`
-    execSync(`${phpPath} ${scriptPath} ${jsonData}`)
+    phpCmd('increment_vote', { id: req.params.id })
     res.status(200).json('The vote was posted.')
   } catch (error) {
-    res.status(500).json('The vote couldn\'t be posted.')
+    res.status(500).json('The vote couldn\'t be posted.' + error.message)
   }
 })
 
@@ -87,10 +84,7 @@ app.post('/vote/:id', function(req, res) {
  */
 app.get('/vote/:question_id', function(req, res) {
   try {
-    const scriptPath  = `${process.env.PWD}/server/get_votes.php`
-    const phpPath     = execSync('which php').toString().replace('\n', '')
-    const jsonData    = `'${JSON.stringify({ question_id: req.params.question_id })}'`
-    const votes       = JSON.parse(execSync(`${phpPath} ${scriptPath} ${jsonData}`))
+    const votes = phpCmd('get_votes', { question_id: req.params.question_id })
     res.status(200).json(votes)
   } catch (error) {
     res.status(500).json('The votes couldn\'t be retrieved.')
