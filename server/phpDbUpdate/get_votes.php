@@ -1,14 +1,9 @@
 <?php
-$host         = "localhost";
-$port         = "3306";
-$user         = "root";
-$pass         = "root";
-$db           = "web2020_redline_project_1";
-$question_id  = json_decode($argv[1])->question_id;
+require_once "utils/connection.php";
+$question_id = json_decode($argv[1])->question_id;
 
 try {
   // Retrieve the votes corresponding to question_id
-  $connection = new PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
   $query = "
     SELECT
       `id`,

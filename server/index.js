@@ -74,7 +74,7 @@ app.post('/vote/:id', function(req, res) {
     phpCmd('increment_vote', { id: req.params.id })
     res.status(200).json('The vote was posted.')
   } catch (error) {
-    res.status(500).json('The vote couldn\'t be posted.' + error.message)
+    res.status(500).json('The vote couldn\'t be posted.')
   }
 })
 

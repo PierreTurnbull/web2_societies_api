@@ -1,14 +1,9 @@
 <?php
-$host = "localhost";
-$port = "3306";
-$user = "root";
-$pass = "root";
-$db   = "web2020_redline_project_1";
-$id   = json_decode($argv[1])->id;
+require_once "utils/connection.php";
+$id = json_decode($argv[1])->id;
 
 try {
   // Retrieve the count that shall be incremented
-  $connection = new PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
   $query = "
     SELECT
       `vote_count`
