@@ -71,13 +71,29 @@ app.post('/email', function(req, res) {
  */
 app.post('/vote/:id', function(req, res) {
   try {
-    const scriptPath = `${process.env.PWD}/server/increment_votes.php`
-    const phpPath = execSync('which php').toString().replace('\n', '')
-    const jsonData = `'${JSON.stringify({ id: req.params.id })}'`
+    const scriptPath  = `${process.env.PWD}/server/increment_vote.php`
+    const phpPath     = execSync('which php').toString().replace('\n', '')
+    const jsonData    = `'${JSON.stringify({ id: req.params.id })}'`
     execSync(`${phpPath} ${scriptPath} ${jsonData}`)
     res.status(200).json('The vote was posted.')
   } catch (error) {
     res.status(500).json('The vote couldn\'t be posted.')
+  }
+})
+
+/**
+ * GET vote endpoint
+ * @param {number} question_id: the criteria for fetching votes
+ */
+app.get('/vote/:question_id', function(req, res) {
+  try {
+    const scriptPath  = `${process.env.PWD}/server/get_votes.php`
+    const phpPath     = execSync('which php').toString().replace('\n', '')
+    const jsonData    = `'${JSON.stringify({ question_id: req.params.question_id })}'`
+    const votes       = JSON.parse(execSync(`${phpPath} ${scriptPath} ${jsonData}`))
+    res.status(200).json(votes)
+  } catch (error) {
+    res.status(500).json('The votes couldn\'t be retrieved.')
   }
 })
 
