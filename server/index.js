@@ -65,12 +65,16 @@ app.post('/email', function(req, res) {
   }
 })
 
-// POST vote endpoint
-app.post('/vote', function(req, res) {
+/**
+ * POST vote endpoint
+ * @param {number} id: the id of the vote that shall be incremented
+ */
+app.post('/vote/:id', function(req, res) {
   try {
-    const scriptPath = `${process.env.PWD}/server/test.php`
+    const scriptPath = `${process.env.PWD}/server/increment_votes.php`
     const phpPath = execSync('which php').toString().replace('\n', '')
-    execSync(`${phpPath} ${scriptPath}`)
+    const jsonData = `'${JSON.stringify({ id: req.params.id })}'`
+    execSync(`${phpPath} ${scriptPath} ${jsonData}`)
     res.status(200).json('The vote was posted.')
   } catch (error) {
     res.status(500).json('The vote couldn\'t be posted.')
