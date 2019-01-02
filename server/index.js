@@ -3,11 +3,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const isProduction = process.env.NODE_ENV === 'production'
 const nodemailer = require('nodemailer')
-const cors = require('cors');
+const phpCmd = require('./utils/phpCmd')
+const cors = require('cors')
 const corsOptions = {
   origin: function (origin, callback) {
     // Only allow requests from the the front-office
-    if (origin === process.env.FO_ROOT_URL) {
+    if (origin === process.env.FO_ROOT_URL || !isProduction) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
@@ -26,7 +27,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 
 // POST mail endpoint
 app.post('/email', function(req, res) {
@@ -60,7 +61,33 @@ app.post('/email', function(req, res) {
       }
     })
   } catch (error) {
-    res.status(500).json('The email couldn\'t be sent')
+    res.status(500).json('The email couldn\'t be sent.')
+  }
+})
+
+/**
+ * POST vote endpoint
+ * @param {number} id: the id of the vote that shall be incremented
+ */
+app.post('/vote/:id', function(req, res) {
+  try {
+    phpCmd('increment_vote', { id: req.params.id })
+    res.status(200).json('The vote was posted.')
+  } catch (error) {
+    res.status(500).json('The vote couldn\'t be posted.')
+  }
+})
+
+/**
+ * GET vote endpoint
+ * @param {number} question_id: the criteria for fetching votes
+ */
+app.get('/vote/:question_id', function(req, res) {
+  try {
+    const votes = phpCmd('get_votes', { question_id: req.params.question_id })
+    res.status(200).json(votes)
+  } catch (error) {
+    res.status(500).json('The votes couldn\'t be retrieved.')
   }
 })
 
