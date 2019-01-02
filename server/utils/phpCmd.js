@@ -12,7 +12,7 @@ const phpCmd = (cmd, data) => {
   const result      = execSync(`${phpPath} ${scriptPath} ${jsonData}`)
   try {
     return JSON.parse(result)
-  } catch {
+  } catch (PDOException) {
     return undefined
   }
 }
