@@ -36,3 +36,11 @@ http://localhost:3001/vote/<id>
 `id` is the id of the vote to increment.
 
 This request returns a string that indicates either its success (200) or its failure (500).
+
+- POST feedback:
+```
+http://localhost:3001/feedback
+```
+The body shall contain the following fields: `emailAddress`, `feedbackMessage` and `username` (optional).
+
+This request returns a string that indicates either its success (200) or its failure (500).

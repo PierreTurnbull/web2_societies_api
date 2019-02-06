@@ -6,7 +6,7 @@ const execSync = require('child_process').execSync
  * @param {object} data: data which JSON shall be passed as argument to the command
  */
 const phpCmd = (cmd, data) => {
-  const scriptPath  = `${process.env.PWD}/server/phpDbUpdate/${cmd}.php`
+  const scriptPath  = `${process.env.INIT_CWD}\\server\\phpDbUpdate\\${cmd}.php`
   const phpPath     = execSync('which php').toString().replace('\n', '')
   const jsonData    = `'${JSON.stringify(data)}'`
   const result      = execSync(`${phpPath} ${scriptPath} ${jsonData}`)

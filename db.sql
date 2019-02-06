@@ -13,9 +13,10 @@ CREATE TABLE votes (
 
 -- Create feedback table
 CREATE TABLE feedbacks (
-  id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  email_address VARCHAR(255) NOT NULL,
-  feedback_message INT(1) NOT NULL
+  id                INT(6)                  UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email_address     VARCHAR(255)  NOT NULL,
+  feedback_message  INT(1)        NOT NULL,
+  username          VARCHAR(255)
 );
 
 -- Create vote instances
