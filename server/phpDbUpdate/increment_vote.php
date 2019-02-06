@@ -22,12 +22,12 @@ try {
     UPDATE
       `votes`
     SET
-      `vote_count`=:vote_count
+      `vote_count`=:incremented_vote_count
     WHERE
       `id`=:id
   ";
   $stmt = $connection->prepare($query);
-  $stmt->bindValue(':vote_count', $vote_count + 1);
+  $stmt->bindValue(':incremented_vote_count', $vote_count + 1);
   $stmt->bindValue(':id', $id);
   $stmt->execute();
   if ($stmt->errorInfo()[0] !== '00000') {
