@@ -44,3 +44,20 @@ http://localhost:3001/feedback
 The body shall contain the following fields: `emailAddress`, `feedbackMessage` and `username` (optional).
 
 This request returns a string that indicates either its success (200) or its failure (500).
+Headers must contain `'Content-Type': 'application/json'`.
+
+Exemple request:
+
+```
+fetch('http://localhost:3001/feedback', {
+	method: 'POST',
+	body: JSON.stringify({
+		emailAddress: 'tt@tt.tt',
+		feedbackMessage: 'My feedback message. GG WP.',
+		username: 'tomy'
+	}),
+	headers: {
+		'Content-Type': 'application/json'
+	}
+})
+```
