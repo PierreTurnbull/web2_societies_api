@@ -2,7 +2,7 @@ const execSync = require('child_process').execSync
 
 /**
  * Execute a PHP script and return the parsed result
- * @param {string} cmd: command to execute
+ * @param {string} cmd: script to execute
  * @param {object} data: data which JSON shall be passed as argument to the command
  */
 const phpCmd = (cmd, data) => {
