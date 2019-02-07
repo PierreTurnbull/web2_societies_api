@@ -54,6 +54,8 @@ You can contact him back here: ${req.body.emailAddress}`
       text: formattedMessage
     }
 
+    phpCmd('post_feedback', req.body)
+
     transporter.sendMail(mailOptions, function(error, info) {
       if (error) {
         throw new Error(error)
@@ -61,8 +63,6 @@ You can contact him back here: ${req.body.emailAddress}`
         res.status(200).json('The feedback was sent.')
       }
     })
-
-    phpCmd('post_feedback', req.body)
   } catch (error) {
     res.status(500).json('The feedback couldn\'t be sent.')
   }
@@ -85,10 +85,10 @@ app.post('/vote/:id', function(req, res) {
  * GET vote endpoint
  * @param {number} question_id: the id of the question corresponding to the votes that shall be retrieved
  */
-app.get('/vote/:question_id', function(req, res) {
+app.get('/votes/:question_id', function(req, res) {
   try {
     const votes = phpCmd('get_votes', { question_id: req.params.question_id })
-    res.status(200).json(votes)
+    res.status(!votes.length ? 404 : 200).json(votes)
   } catch (error) {
     res.status(500).json('The votes couldn\'t be retrieved.')
   }

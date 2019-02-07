@@ -8,7 +8,7 @@ const execSync = require('child_process').execSync
 const phpCmd = (cmd, data) => {
   const scriptPath  = `${process.env.INIT_CWD}\\server\\phpDbUpdate\\${cmd}.php`
   const phpPath     = execSync('which php').toString().replace('\n', '')
-  const jsonData    = `'${JSON.stringify(data)}'`
+  const jsonData    = `"${JSON.stringify(data).replace(/"/g, '\\\"')}"`
   const result      = execSync(`${phpPath} ${scriptPath} ${jsonData}`)
   try {
     return JSON.parse(result)

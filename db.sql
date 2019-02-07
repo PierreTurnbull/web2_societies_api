@@ -15,7 +15,7 @@ CREATE TABLE votes (
 CREATE TABLE feedbacks (
   id                INT(6)                  UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   email_address     VARCHAR(255)  NOT NULL,
-  feedback_message  INT(1)        NOT NULL,
+  feedback_message  VARCHAR(1024) NOT NULL,
   username          VARCHAR(255)
 );
 

@@ -5,7 +5,6 @@ $emailAddress = $feedbackData->emailAddress ?? '';
 $feedbackMessage = $feedbackData->feedbackMessage ?? '';
 $username = $feedbackData->username ?? '';
 
-echo $username;
 try {
     // POST the feedback
     $query = "
