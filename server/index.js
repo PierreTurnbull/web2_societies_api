@@ -29,8 +29,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cors(corsOptions))
 
-// POST mail endpoint
-app.post('/email', function(req, res) {
+// POST feedback endpoint
+app.post('/feedback', function(req, res) {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -40,28 +40,31 @@ app.post('/email', function(req, res) {
       }
     })
 
-    const formattedMessage = `${req.body.message}
-    
-    -----
-    
-    This email was sent by ${req.body.name || 'anonymous'} from your webdoc API.`
+    const formattedMessage = `${req.body.feedbackMessage}
+
+-----
+
+This email was sent by ${req.body.username || 'anonymous'} from your webdoc API.
+You can contact him back here: ${req.body.emailAddress}`
 
     const mailOptions = {
-      from: '',
+      from: 'websocieties',
       to: process.env.FEEDBACK_MAILING_LIST,
       subject: 'Webdoc feedback',
       text: formattedMessage
     }
 
+    phpCmd('post_feedback', req.body)
+
     transporter.sendMail(mailOptions, function(error, info) {
       if (error) {
         throw new Error(error)
       } else {
-        res.status(200).json(info.response)
+        res.status(200).json('The feedback was sent.')
       }
     })
   } catch (error) {
-    res.status(500).json('The email couldn\'t be sent.')
+    res.status(500).json('The feedback couldn\'t be sent.')
   }
 })
 
@@ -80,12 +83,12 @@ app.post('/vote/:id', function(req, res) {
 
 /**
  * GET vote endpoint
- * @param {number} question_id: the criteria for fetching votes
+ * @param {number} question_id: the id of the question corresponding to the votes that shall be retrieved
  */
-app.get('/vote/:question_id', function(req, res) {
+app.get('/votes/:question_id', function(req, res) {
   try {
     const votes = phpCmd('get_votes', { question_id: req.params.question_id })
-    res.status(200).json(votes)
+    res.status(!votes.length ? 404 : 200).json(votes)
   } catch (error) {
     res.status(500).json('The votes couldn\'t be retrieved.')
   }
